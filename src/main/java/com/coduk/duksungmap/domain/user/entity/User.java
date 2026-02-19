@@ -1,5 +1,6 @@
 package com.coduk.duksungmap.domain.user.entity;
 
+import com.coduk.duksungmap.global.common.entity.BaseEntity;
 import com.coduk.duksungmap.global.common.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,12 +36,6 @@ public class User {
     @Column(name="is_admin", nullable=false)
     private boolean isAdmin = false;
 
-    @Column(name="created_at", nullable=false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name="updated_at", nullable=false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
     public static User createVerified(String duksungId, String email) {
         User user = new User();
         user.duksungId = duksungId;
@@ -48,23 +43,18 @@ public class User {
         user.emailVerified = true;
         user.status = UserStatus.ACTIVE;
         user.isAdmin = false;
-        user.createdAt = LocalDateTime.now();
-        user.updatedAt = LocalDateTime.now();
         return user;
     }
 
     public void withdraw() {
         this.status = UserStatus.DELETED;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void reactivate() {
         this.status = UserStatus.ACTIVE;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void verifyEmail() {
         this.emailVerified = true;
-        this.updatedAt = LocalDateTime.now();
     }
 }
