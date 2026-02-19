@@ -33,7 +33,7 @@ public class EmailService {
             mailSender.send(message);
 
         } catch (Exception e) {
-            throw new CustomException(AuthErrorCode.EMAIL_SEND_FAIL, e.getMessage());
+            throw new CustomException(AuthErrorCode.EMAIL_SEND_FAIL);
         }
     }
 
@@ -45,9 +45,7 @@ public class EmailService {
                     <span style="color:#981B45;">덕성여대 지도 서비스</span>입니다.
                 </h3>
 
-                <p>아래 인증 번호를 입력해 이메일 인증을 완료해주세요.</p>
-                
-                <br>
+                <p>아래 인증 번호를 입력해 이메일 인증을 완료해주세요.</p><br>
 
                 <h1 style="color:#981B45; letter-spacing:5px;">%s</h1>
 
