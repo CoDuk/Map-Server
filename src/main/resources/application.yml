@@ -16,3 +16,29 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
     open-in-view: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  mail:
+    host: ${SMTP_HOST}
+    port: 587
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  auth:
+    email-domain: duksung.ac.kr
+    verification-ttl-seconds: 300
+    refresh-ttl-days: 30
+    access-ttl-minutes: 15
+    refresh-cookie-name: refresh_token
+    cookie-secure: false
