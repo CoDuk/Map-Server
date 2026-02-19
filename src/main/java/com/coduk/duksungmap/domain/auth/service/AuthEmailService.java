@@ -14,7 +14,7 @@ import java.security.SecureRandom;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthEmailService {
 
     private final EmailService emailService;
     private final EmailVerificationStore store;
