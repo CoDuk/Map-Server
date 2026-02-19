@@ -102,7 +102,7 @@ public class EmailService {
 
                   <!-- 안내 -->
                   <div class="hint" style="font-size:13px; color:#9e9e9e; font-weight:400;">
-                    * 인증번호는 5분간 유효합니다.
+                    * 인증 번호는 5분간 유효합니다.
                   </div>
 
                 </td>
