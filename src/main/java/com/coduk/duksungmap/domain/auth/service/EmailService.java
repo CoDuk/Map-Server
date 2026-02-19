@@ -39,20 +39,80 @@ public class EmailService {
 
     private String buildBody(String code) {
         return """
-            <div style="font-family: Arial, sans-serif; padding: 10px;">
-                <h3>
-                    안녕하세요!
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        /* 모바일 메일 앱 자동 글자확대 방지 */
+        body, table, td, a { -webkit-text-size-adjust:100%%; -ms-text-size-adjust:100%%; }
+
+        /* iOS Mail 링크 파랗게 되는 것 방지(선택) */
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; }
+
+        /* 모바일에서 폰트/간격 줄이기 */
+        @media screen and (max-width: 480px) {
+          .container { padding: 28px !important; }
+          .title { font-size: 34px !important; line-height: 1.25 !important; }
+          .desc  { font-size: 20px !important; line-height: 1.35 !important; }
+          .code  { font-size: 64px !important; letter-spacing: 12px !important; }
+          .hint  { font-size: 14px !important; }
+        }
+      </style>
+    </head>
+
+    <body style="margin:0; padding:0; background:#f5f5f5;">
+      <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0"
+             style="background:#f5f5f5; margin:0; padding:0;">
+        <tr>
+          <td align="center" style="padding:24px 12px;">
+            <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0"
+                   style="width:600px; max-width:600px; background:#ffffff; border-radius:12px;">
+              <tr>
+                <td class="container"
+                    style="padding:40px; font-family:'Apple SD Gothic Neo','Noto Sans KR',Arial,sans-serif;">
+
+                  <!-- 제목 -->
+                  <div class="title"
+                       style="font-size:15px; font-weight:600; color:#000; line-height:1.3; margin:0;">
+                    안녕하세요.
                     <span style="color:#981B45;">덕성여대 지도 서비스</span>입니다.
-                </h3>
+                  </div>
 
-                <p>아래 인증 번호를 입력해 이메일 인증을 완료해주세요.</p><br>
+                  <div style="height:15px;"></div>
 
-                <h1 style="color:#981B45; letter-spacing:5px;">%s</h1>
+                  <!-- 설명 -->
+                  <div class="desc"
+                       style="font-size:15px; font-weight:600; color:#000; line-height:1.4;">
+                    아래 인증 번호를 입력해 이메일 인증을 완료해주세요.
+                  </div>
 
-                <p style="color:gray;">
+                  <div style="height:35px;"></div>
+
+                  <!-- 코드 -->
+                  <div style="display:inline-flex; align-items:center;">
+                    <span class="code"
+                        style="font-size:50px; font-weight:800; color:#981B45; letter-spacing:6px; line-height:1; white-space:nowrap;">
+                        %s
+                    </span>
+                  </div>
+
+                  <div style="height:28px;"></div>
+
+                  <!-- 안내 -->
+                  <div class="hint" style="font-size:13px; color:#9e9e9e; font-weight:400;">
                     * 인증번호는 5분간 유효합니다.
-                </p>
-            </div>
-        """.formatted(code);
+                  </div>
+
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+    """.formatted(code);
     }
 }
