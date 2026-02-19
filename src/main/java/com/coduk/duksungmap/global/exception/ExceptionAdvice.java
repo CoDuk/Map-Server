@@ -1,8 +1,8 @@
 package com.coduk.duksungmap.global.exception;
 
-import com.coduk.duksungmap.global.reponse.ApiResponse;
-import com.coduk.duksungmap.global.reponse.BaseCode;
-import com.coduk.duksungmap.global.reponse.ErrorCode;
+import com.coduk.duksungmap.global.response.ApiResponse;
+import com.coduk.duksungmap.global.response.BaseCode;
+import com.coduk.duksungmap.global.response.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
