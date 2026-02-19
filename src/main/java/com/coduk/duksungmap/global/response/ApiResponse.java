@@ -1,4 +1,4 @@
-package com.coduk.duksungmap.global.reponse;
+package com.coduk.duksungmap.global.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

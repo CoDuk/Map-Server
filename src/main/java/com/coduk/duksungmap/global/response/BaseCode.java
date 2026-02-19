@@ -1,4 +1,4 @@
-package com.coduk.duksungmap.global.reponse;
+package com.coduk.duksungmap.global.response;
 
 import org.springframework.http.HttpStatus;
 

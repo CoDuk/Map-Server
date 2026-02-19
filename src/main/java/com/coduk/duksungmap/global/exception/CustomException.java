@@ -1,6 +1,6 @@
 package com.coduk.duksungmap.global.exception;
 
-import com.coduk.duksungmap.global.reponse.BaseCode;
+import com.coduk.duksungmap.global.response.BaseCode;
 import lombok.Getter;
 
 @Getter
