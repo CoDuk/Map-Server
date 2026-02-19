@@ -2,7 +2,11 @@ package com.coduk.duksungmap.domain.auth.controller;
 
 import com.coduk.duksungmap.domain.auth.dto.*;
 import com.coduk.duksungmap.domain.auth.service.AuthEmailService;
+import com.coduk.duksungmap.domain.auth.service.RefreshTokenService;
 import com.coduk.duksungmap.domain.user.entity.User;
+import com.coduk.duksungmap.global.response.ApiResponse;
+import com.coduk.duksungmap.global.response.SuccessCode;
+import com.coduk.duksungmap.global.security.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,24 +19,37 @@ import org.springframework.web.bind.annotation.*;
 public class AuthEmailController {
 
     private final AuthEmailService authEmailService;
-    // TODO: JwtProvider, RefreshTokenService 주입해서 아래 verify에서 사용
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/send")
-    public ResponseEntity<SendCodeResponse> sendCode(@RequestBody @Valid SendCodeRequest req) {
+    public ResponseEntity<ApiResponse<SendCodeResponse>> sendCode(@RequestBody @Valid SendCodeRequest req) {
         long ttl = authEmailService.sendCode(req.duksungId());
 
-        return ResponseEntity.ok(new SendCodeResponse(ttl));
+        return ResponseEntity
+                .status(SuccessCode.OK.getHttpStatus())
+                .body(ApiResponse.onSuccess(new SendCodeResponse(ttl), SuccessCode.OK));
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<VerifyCodeResponse> verifyCode(@RequestBody @Valid VerifyCodeRequest req,
-                                                     HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<VerifyCodeResponse>> verifyCode(
+            @RequestBody @Valid VerifyCodeRequest req,
+            @RequestHeader(value = "X-Device-Id", required = false) String deviceId,
+            HttpServletResponse response
+    ) {
         User user = authEmailService.verifyCode(req.duksungId(), req.code());
 
-        // TODO: accessToken 생성
+        // access token 생성
+        String accessToken = jwtProvider.createAccessToken(user.getId(), user.isAdmin());
 
-        // TODO: refreshToken 생성 + DB 저장 + 쿠키 설정
+        // refresh token 생성 + DB 저장
+        String refreshRaw = refreshTokenService.issue(user, deviceId);
 
-        return ResponseEntity.ok(new VerifyCodeResponse("TODO_ACCESS_TOKEN"));
+        // refresh token 쿠키 설정
+        refreshTokenService.setRefreshCookie(response, refreshRaw);
+
+        return ResponseEntity
+                .status(SuccessCode.OK.getHttpStatus())
+                .body(ApiResponse.onSuccess(new VerifyCodeResponse(accessToken), SuccessCode.OK));
     }
 }
