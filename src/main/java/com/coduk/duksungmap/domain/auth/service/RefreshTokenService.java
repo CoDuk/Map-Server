@@ -41,7 +41,11 @@ public class RefreshTokenService {
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(refreshTtlDays);
 
         RefreshToken token = RefreshToken.issue(user, hash, deviceId, expiresAt);
-        refreshTokenRepository.save(token);
+        refreshTokenRepository.findByUserIdAndDeviceId(user.getId(), deviceId)
+                .ifPresentOrElse(
+                        rt -> rt.rotate(hash, expiresAt),
+                        () -> refreshTokenRepository.save(RefreshToken.issue(user, hash, deviceId, expiresAt))
+                );
 
         return raw; // 쿠키로 내려줄 원문
     }
