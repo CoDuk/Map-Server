@@ -6,6 +6,7 @@ import com.coduk.duksungmap.global.response.ApiResponse;
 import com.coduk.duksungmap.global.response.SuccessCode;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,20 @@ public class AuthController {
         return ResponseEntity
                 .status(SuccessCode.OK.getHttpStatus())
                 .body(ApiResponse.onSuccess(new RefreshResponse(accessToken), SuccessCode.OK));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String refreshRaw = extractCookie(request, refreshCookieName);
+
+        authService.logout(refreshRaw, response);
+
+        return ResponseEntity
+                .status(SuccessCode.OK.getHttpStatus())
+                .body(ApiResponse.onSuccess(null, SuccessCode.OK));
     }
 
     private String extractCookie(HttpServletRequest request, String name) {

@@ -46,6 +46,43 @@ public class RefreshTokenService {
         return raw; // 쿠키로 내려줄 원문
     }
 
+    // refresh token 검증
+    @Transactional(readOnly = true)
+    public RefreshToken validateOrThrow(String refreshTokenRaw) {
+        String hash = hashOrThrow(refreshTokenRaw);
+
+        RefreshToken token = refreshTokenRepository.findByTokenHash(hash)
+                .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID));
+
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new CustomException(AuthErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
+
+        return token;
+    }
+
+    @Transactional
+    public void deleteOrThrow(String refreshTokenRaw) {
+        String hash = hashOrThrow(refreshTokenRaw);
+
+        RefreshToken token = refreshTokenRepository.findByTokenHash(hash)
+                .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID));
+
+        refreshTokenRepository.delete(token);
+    }
+
+    @Transactional
+    public String rotate(String refreshTokenRaw, HttpServletResponse response) {
+        RefreshToken old = validateOrThrow(refreshTokenRaw);
+
+        refreshTokenRepository.delete(old);
+
+        String newRaw = issue(old.getUser(), old.getDeviceId());
+        setRefreshCookie(response, newRaw);
+
+        return newRaw;
+    }
+
     public void setRefreshCookie(HttpServletResponse response, String refreshTokenRaw) {
         if (refreshTokenRaw == null || refreshTokenRaw.isBlank()) {
             throw new CustomException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
@@ -63,6 +100,15 @@ public class RefreshTokenService {
         response.addCookie(cookie);
     }
 
+    public void clearRefreshCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(refreshCookieName, "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
     // 재발급/검증에서 사용
     public String hashOrThrow(String raw) {
         if (raw == null || raw.isBlank()) {
@@ -76,19 +122,5 @@ public class RefreshTokenService {
         } catch (Exception e) {
             throw new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID);
         }
-    }
-
-    // refresh token 검증
-    public RefreshToken validateOrThrow(String refreshTokenRaw) {
-        String hash = hashOrThrow(refreshTokenRaw);
-
-        RefreshToken token = refreshTokenRepository.findByTokenHash(hash)
-                .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID));
-
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new CustomException(AuthErrorCode.REFRESH_TOKEN_EXPIRED);
-        }
-
-        return token;
     }
 }
