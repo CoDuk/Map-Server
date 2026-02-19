@@ -40,7 +40,6 @@ public class RefreshTokenService {
 
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(refreshTtlDays);
 
-        RefreshToken token = RefreshToken.issue(user, hash, deviceId, expiresAt);
         refreshTokenRepository.findByUserIdAndDeviceId(user.getId(), deviceId)
                 .ifPresentOrElse(
                         rt -> rt.rotate(hash, expiresAt),
@@ -51,7 +50,7 @@ public class RefreshTokenService {
     }
 
     // refresh token 검증
-    @Transactional(readOnly = true)
+    @Transactional
     public RefreshToken validateOrThrow(String refreshTokenRaw) {
         String hash = hashOrThrow(refreshTokenRaw);
 
@@ -59,6 +58,7 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID));
 
         if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            refreshTokenRepository.delete(token);
             throw new CustomException(AuthErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
@@ -77,11 +77,19 @@ public class RefreshTokenService {
 
     @Transactional
     public String rotate(String refreshTokenRaw, HttpServletResponse response) {
-        RefreshToken old = validateOrThrow(refreshTokenRaw);
+        RefreshToken token = validateOrThrow(refreshTokenRaw);
 
-        refreshTokenRepository.delete(old);
+        // 새 raw/hash 생성
+        String newRaw = UUID.randomUUID() + "." + UUID.randomUUID();
+        String newHash = hashOrThrow(newRaw);
 
-        String newRaw = issue(old.getUser(), old.getDeviceId());
+        // 만료 연장
+        LocalDateTime newExpiresAt = LocalDateTime.now().plusDays(refreshTtlDays);
+
+        // 같은 row에서 교체
+        token.rotate(newHash, newExpiresAt);
+
+        // 새 쿠키 발급
         setRefreshCookie(response, newRaw);
 
         return newRaw;

@@ -23,10 +23,13 @@ public class AuthController {
     private String refreshCookieName;
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<RefreshResponse>> refresh(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<RefreshResponse>> refresh(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
 
         String refreshRaw = extractCookie(request, refreshCookieName);
-        String accessToken = authService.refresh(refreshRaw);
+        String accessToken = authService.refresh(refreshRaw, response);
 
         return ResponseEntity
                 .status(SuccessCode.OK.getHttpStatus())
