@@ -7,12 +7,18 @@ import com.coduk.duksungmap.domain.user.entity.User;
 import com.coduk.duksungmap.global.response.ApiResponse;
 import com.coduk.duksungmap.global.response.SuccessCode;
 import com.coduk.duksungmap.global.security.JwtProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "이메일 인증 로그인 API",
+        description = "덕성여대 이메일 인증을 통한 회원가입 및 로그인 API입니다."
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth/email")
@@ -22,6 +28,13 @@ public class AuthEmailController {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
+    @Operation(
+            summary = "이메일 인증 코드 발송",
+            description = """
+                덕성여대 이메일(@duksung.ac.kr)로 6자리 인증 코드를 발송합니다.
+                - 인증 코드는 5분 동안만 유효합니다.
+                """
+    )
     @PostMapping("/send")
     public ResponseEntity<ApiResponse<SendCodeResponse>> sendCode(@RequestBody @Valid SendCodeRequest req) {
         long ttl = authEmailService.sendCode(req.duksungId());
@@ -31,6 +44,16 @@ public class AuthEmailController {
                 .body(ApiResponse.onSuccess(new SendCodeResponse(ttl), SuccessCode.OK));
     }
 
+    @Operation(
+            summary = "이메일 인증 코드 확인 및 로그인",
+            description = """
+                사용자가 입력한 인증 코드를 검증합니다.
+                - 인증 성공 시 회원가입 또는 자동 로그인 처리됩니다.
+                - Access Token을 반환합니다.
+                - Refresh Token은 HttpOnly 쿠키로 설정됩니다.
+                - X-Device-Id 헤더를 통해 디바이스를 구분합니다.
+                """
+    )
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<VerifyCodeResponse>> verifyCode(
             @RequestBody @Valid VerifyCodeRequest req,
