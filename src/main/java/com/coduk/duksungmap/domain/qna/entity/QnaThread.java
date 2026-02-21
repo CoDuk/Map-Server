@@ -29,6 +29,9 @@ public class QnaThread extends BaseEntity {
     @Column(nullable=false)
     private String content;
 
+    @Column(name = "is_answered", nullable = false)
+    private boolean isAnswered = false;
+
     @Column(name="is_deleted", nullable=false)
     private boolean isDeleted = false;
 
@@ -37,6 +40,10 @@ public class QnaThread extends BaseEntity {
         t.user = user;
         t.content = content;
         return t;
+    }
+
+    public void markAnswered() {
+        this.isAnswered = true;
     }
 
     public void delete() {
