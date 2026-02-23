@@ -14,7 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
         indexes = @Index(name="idx_qna_threads_user_id", columnList="user_id"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE qna_messages SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE qna_threads SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class QnaThread extends BaseEntity {
 

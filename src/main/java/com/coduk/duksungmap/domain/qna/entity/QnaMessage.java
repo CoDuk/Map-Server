@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE qna_threads SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE qna_messages SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class QnaMessage extends BaseEntity {
 
