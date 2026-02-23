@@ -75,7 +75,7 @@ public class EmailService {
                         src="data:image/png;base64,%s"
                         width="90"
                         alt="덕성여대 지도 서비스"
-                        style="display:block; margin-left:6px; margin-bottom:18px;" />
+                        style="display:block; margin-left:45px; margin-bottom:40px;" />
                    """.formatted(logoBase64);
 
         return """
@@ -118,7 +118,7 @@ public class EmailService {
                 
                   <!-- 제목 -->
                   <div class="title"
-                       style="font-size:15px; font-weight:600; color:#000; line-height:1.3; margin:0;">
+                       style="font-size:15px; font-weight:550; color:#000; line-height:1.3; margin:0;">
                     안녕하세요.
                     <span style="color:#981B45;">덕성여대 지도 서비스</span>입니다.
                   </div>
@@ -127,7 +127,7 @@ public class EmailService {
 
                   <!-- 설명 -->
                   <div class="desc"
-                       style="font-size:15px; font-weight:600; color:#000; line-height:1.4;">
+                       style="font-size:15px; font-weight:550; color:#000; line-height:1.4;">
                     아래 인증 번호를 입력해 이메일 인증을 완료해주세요.
                   </div>
 
@@ -136,7 +136,7 @@ public class EmailService {
                   <!-- 코드 -->
                   <div style="display:inline-flex; align-items:center;">
                     <span class="code"
-                        style="font-size:50px; font-weight:800; color:#981B45; letter-spacing:6px; line-height:1; white-space:nowrap;">
+                        style="font-size:45px; font-weight:600; color:#981B45; letter-spacing:6px; line-height:1; white-space:nowrap;">
                         %s
                     </span>
                   </div>
