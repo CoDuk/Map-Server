@@ -46,6 +46,10 @@ public class QnaThread extends BaseEntity {
         this.isAnswered = true;
     }
 
+    public void unmarkAnswered() {
+        this.isAnswered = false;
+    }
+
     public void delete() {
         this.isDeleted = true;
     }

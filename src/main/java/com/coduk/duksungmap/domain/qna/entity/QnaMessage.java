@@ -47,6 +47,10 @@ public class QnaMessage extends BaseEntity {
         return m;
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
     public void delete() {
         this.isDeleted = true;
     }
