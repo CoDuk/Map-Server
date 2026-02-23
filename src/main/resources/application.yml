@@ -44,3 +44,5 @@ app:
     cookie-secure: false
   jwt:
     secret: ${JWT_SECRET}
+  mail:
+    logo-path: static/images/logo.png
