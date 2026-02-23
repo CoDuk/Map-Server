@@ -1,4 +1,5 @@
 package com.coduk.duksungmap.domain.qna.dto;
 
-public class CreateQnaMessageResponse {
-}
+public record CreateQnaMessageResponse(
+        Long messageId
+) {}

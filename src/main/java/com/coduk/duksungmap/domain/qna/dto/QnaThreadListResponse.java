@@ -1,4 +1,7 @@
 package com.coduk.duksungmap.domain.qna.dto;
 
-public class QnaThreadListResponse {
-}
+import java.util.List;
+
+public record QnaThreadListResponse(
+        List<QnaThreadListItem> threads
+) {}

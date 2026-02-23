@@ -1,4 +1,10 @@
 package com.coduk.duksungmap.domain.qna.dto;
 
-public class QnaThreadListItem {
-}
+import java.time.LocalDateTime;
+
+public record QnaThreadListItem(
+        Long threadId,
+        String content,
+        boolean answered,
+        LocalDateTime createdAt
+) {}
