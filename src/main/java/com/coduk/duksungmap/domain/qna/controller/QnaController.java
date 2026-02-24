@@ -1,5 +1,6 @@
 package com.coduk.duksungmap.domain.qna.controller;
 
+import com.coduk.duksungmap.domain.auth.exception.AuthErrorCode;
 import com.coduk.duksungmap.domain.qna.dto.*;
 import com.coduk.duksungmap.domain.qna.exception.QnaErrorCode;
 import com.coduk.duksungmap.domain.qna.service.QnaMessageService;
@@ -26,8 +27,7 @@ public class QnaController {
     private SecurityUserPrincipal principalOrThrow() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null || !(auth.getPrincipal() instanceof SecurityUserPrincipal p)) {
-            throw new CustomException(QnaErrorCode.ADMIN_ONLY);
-        }
+            throw new CustomException(AuthErrorCode.UNAUTHORIZED);        }
         return p;
     }
 
