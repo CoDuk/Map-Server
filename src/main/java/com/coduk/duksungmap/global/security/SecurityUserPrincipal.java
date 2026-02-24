@@ -37,7 +37,7 @@ public class SecurityUserPrincipal implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-    @Override public String getPassword() { return ""; }
+    @Override public String getPassword() { return null; }
     @Override public String getUsername() { return String.valueOf(userId); }
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }

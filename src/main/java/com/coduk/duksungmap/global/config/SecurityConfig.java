@@ -4,6 +4,7 @@ import com.coduk.duksungmap.global.security.JwtAuthFilter;
 import com.coduk.duksungmap.global.security.JwtProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +29,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/qna/**").authenticated()
+                        // 관리자 전용 경로
+                        .requestMatchers(HttpMethod.POST, "/api/qna/threads/*/answer").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/qna/answers/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/qna/answers/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/qna/threads/*").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
