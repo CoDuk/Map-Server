@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/qna/answers/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/qna/threads/*").hasRole("ADMIN")
                         .requestMatchers("/api/qna/**").authenticated()
+                        .requestMatchers("/api/users/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, objectMapper), UsernamePasswordAuthenticationFilter.class);

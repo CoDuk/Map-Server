@@ -135,4 +135,10 @@ public class RefreshTokenService {
             throw new CustomException(AuthErrorCode.REFRESH_TOKEN_INVALID);
         }
     }
+
+    // 특정 유저의 모든 토큰 삭제
+    @Transactional
+    public void deleteAllByUserId(Long userId) {
+        refreshTokenRepository.deleteAllByUserId(userId);
+    }
 }
