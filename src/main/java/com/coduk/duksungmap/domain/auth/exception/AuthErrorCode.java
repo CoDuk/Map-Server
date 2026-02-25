@@ -16,6 +16,10 @@ public enum AuthErrorCode implements BaseCode {
     EMAIL_CODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "AUTH-004", "인증 코드가 일치하지 않습니다."),
     EMAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-005", "이메일 전송에 실패했습니다."),
 
+    // 인증 공통
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH-100", "로그인이 필요합니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "AUTH-106", "접근 권한이 없습니다."),
+
     // 토큰
     ACCESS_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "AUTH-101", "유효하지 않은 액세스 토큰입니다."),
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH-102", "액세스 토큰이 만료되었습니다."),
