@@ -18,6 +18,7 @@ public enum AuthErrorCode implements BaseCode {
 
     // 인증 공통
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH-100", "로그인이 필요합니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "AUTH-106", "접근 권한이 없습니다."),
 
     // 토큰
     ACCESS_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "AUTH-101", "유효하지 않은 액세스 토큰입니다."),

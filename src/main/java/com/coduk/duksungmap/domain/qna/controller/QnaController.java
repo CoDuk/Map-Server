@@ -27,7 +27,8 @@ public class QnaController {
     private SecurityUserPrincipal principalOrThrow() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null || !(auth.getPrincipal() instanceof SecurityUserPrincipal p)) {
-            throw new CustomException(AuthErrorCode.UNAUTHORIZED);        }
+            throw new CustomException(AuthErrorCode.UNAUTHORIZED);
+        }
         return p;
     }
 
