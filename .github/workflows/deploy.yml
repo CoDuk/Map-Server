@@ -1,0 +1,90 @@
+name: CI/CD Deploy to EC2
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: heezuko/duksungmap-api
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build JAR
+        run: ./gradlew clean bootJar -x test
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Build & Push (linux/amd64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ secrets.EC2_APP_DIR }}
+
+            # 최신 이미지 pull
+            sudo docker pull ${{ env.IMAGE_NAME }}:latest
+
+            # compose v2 우선 사용, 없으면 fallback
+            if sudo docker compose version >/dev/null 2>&1; then
+              sudo docker compose -f docker-compose.prod.yml up -d --pull always --remove-orphans
+            else
+              sudo docker-compose -f docker-compose.prod.yml up -d
+            fi
+
+            # 오래된 이미지 정리(선택)
+            sudo docker image prune -f
+
+            # 상태 확인
+            sudo docker ps
