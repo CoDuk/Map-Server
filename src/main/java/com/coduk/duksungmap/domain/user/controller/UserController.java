@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
         name = "사용자 계정 API",
         description = "사용자 계정 관련 API입니다."
 )
-@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "BearerAuth")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")

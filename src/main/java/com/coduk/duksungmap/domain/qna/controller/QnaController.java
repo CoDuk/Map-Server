@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
         name = "문의사항 API",
         description = "문의사항 질문/답변 기능 API입니다."
 )
-@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "BearerAuth")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/qna")
