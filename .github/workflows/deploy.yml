@@ -78,9 +78,9 @@ jobs:
 
             # compose v2 우선 사용, 없으면 fallback
             if sudo docker compose version >/dev/null 2>&1; then
-              sudo docker compose -f docker-compose.prod.yml up -d --pull always --remove-orphans
+              sudo docker compose -f docker-compose.yml up -d --pull always --remove-orphans
             else
-              sudo docker-compose -f docker-compose.prod.yml up -d
+              sudo docker-compose -f docker-compose.yml up -d
             fi
 
             # 오래된 이미지 정리(선택)
