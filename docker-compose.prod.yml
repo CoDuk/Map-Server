@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   api:
-    image: heezuko/duksungmap-api:0.0.1
+    image: heezuko/duksungmap-api:latest
     container_name: duksungmap_api
     restart: unless-stopped
     env_file:
