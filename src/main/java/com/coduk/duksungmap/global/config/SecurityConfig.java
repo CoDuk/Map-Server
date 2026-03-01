@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(securityExceptionHandler)      // 403
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         // 관리자 전용 경로
                         .requestMatchers(HttpMethod.POST, "/api/qna/threads/*/answer").hasRole("ADMIN")
@@ -58,13 +59,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
+        config.setAllowedOriginPatterns(List.of(
                 "https://duksung-map.site",
-                "http://localhost:5173"
+                "https://www.duksung-map.site",
+                "http://localhost:5173",
+                "http://127.0.0.1:5173"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true); // 쿠키 허용
         config.setMaxAge(3600L);
 
