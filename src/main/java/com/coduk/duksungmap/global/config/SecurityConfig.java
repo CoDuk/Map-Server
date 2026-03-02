@@ -60,7 +60,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
-                "https://*.duksung-map.site",
+                "https://duksung-map.site",
+                "https://www.duksung-map.site",
                 "http://localhost:5173",
                 "http://127.0.0.1:5173"
         ));
