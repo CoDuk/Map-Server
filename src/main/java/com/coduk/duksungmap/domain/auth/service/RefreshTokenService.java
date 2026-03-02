@@ -5,7 +5,6 @@ import com.coduk.duksungmap.domain.auth.exception.AuthErrorCode;
 import com.coduk.duksungmap.domain.auth.repository.RefreshTokenRepository;
 import com.coduk.duksungmap.domain.user.entity.User;
 import com.coduk.duksungmap.global.exception.CustomException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -110,6 +109,7 @@ public class RefreshTokenService {
                 .path("/")
                 .maxAge(seconds)
                 .sameSite(cookieSecure ? "None" : "Lax") // prod는 None, local은 Lax
+                .domain(".duksung-map.site")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -122,6 +122,7 @@ public class RefreshTokenService {
                 .path("/")
                 .maxAge(0)
                 .sameSite(cookieSecure ? "None" : "Lax")
+                .domain(".duksung-map.site")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
