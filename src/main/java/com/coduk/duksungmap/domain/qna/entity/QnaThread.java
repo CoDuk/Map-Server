@@ -26,7 +26,7 @@ public class QnaThread extends BaseEntity {
     private User user;
 
     @Lob
-    @Column(nullable=false)
+    @Column(nullable=false, columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "is_answered", nullable = false)
