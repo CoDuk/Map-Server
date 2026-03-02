@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,12 +27,13 @@ public class SecurityConfig {
             HttpSecurity http,
             JwtProvider jwtProvider,
             ObjectMapper objectMapper,
-            SecurityExceptionHandler securityExceptionHandler
+            SecurityExceptionHandler securityExceptionHandler,
+            CorsConfigurationSource corsConfigurationSource
     ) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(eh -> eh
                         .authenticationEntryPoint(securityExceptionHandler) // 401
@@ -60,8 +60,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
-                "https://duksung-map.site",
-                "https://www.duksung-map.site",
+                "https://*.duksung-map.site",
                 "http://localhost:5173",
                 "http://127.0.0.1:5173"
         ));
