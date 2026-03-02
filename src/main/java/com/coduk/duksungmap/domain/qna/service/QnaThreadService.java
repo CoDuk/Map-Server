@@ -31,6 +31,7 @@ public class QnaThreadService {
                 .stream()
                 .map(t -> new QnaThreadListItem(
                         t.getId(),
+                        t.getUser().getId(),
                         t.getContent(),
                         t.isAnswered(),
                         t.getCreatedAt()
