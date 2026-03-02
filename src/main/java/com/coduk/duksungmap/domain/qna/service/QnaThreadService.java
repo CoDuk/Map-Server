@@ -27,7 +27,7 @@ public class QnaThreadService {
     // 질문 전체 조회
     @Transactional(readOnly = true)
     public QnaThreadListResponse getThreads() {
-        List<QnaThreadListItem> items = threadRepository.findAllByOrderByCreatedAtDesc()
+        List<QnaThreadListItem> items = threadRepository.findAllWithUserOrderByCreatedAtDesc()
                 .stream()
                 .map(t -> new QnaThreadListItem(
                         t.getId(),
