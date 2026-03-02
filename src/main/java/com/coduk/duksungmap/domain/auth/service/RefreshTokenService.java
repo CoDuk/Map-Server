@@ -9,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,25 +102,29 @@ public class RefreshTokenService {
             throw new CustomException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        Cookie cookie = new Cookie(refreshCookieName, refreshTokenRaw);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure); // 로컬 false, 배포 https true
-        cookie.setPath("/");
-
         long seconds = refreshTtlDays * 24L * 60L * 60L;
-        int maxAge = seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds;
-        cookie.setMaxAge(maxAge);
 
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(refreshCookieName, refreshTokenRaw)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(seconds)
+                .sameSite(cookieSecure ? "None" : "Lax") // prod는 None, local은 Lax
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public void clearRefreshCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(refreshCookieName, "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(refreshCookieName, "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(0)
+                .sameSite(cookieSecure ? "None" : "Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     // 재발급/검증에서 사용
