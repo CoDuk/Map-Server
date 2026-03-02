@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public record QnaThreadListItem(
         Long threadId,
+        Long userId,
         String content,
         boolean answered,
         LocalDateTime createdAt
