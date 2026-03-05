@@ -33,13 +33,15 @@ public class EmailService {
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true, "UTF-8");
 
+            ClassPathResource logo = new ClassPathResource(logoPath);
+            boolean hasLogo = logo.exists();
+
             helper.setTo(to);
             helper.setSubject("[덕성여대 지도 서비스] 이메일 인증 번호 안내");
             helper.setFrom(fromEmail);
-            helper.setText(buildBody(code), true);
+            helper.setText(buildBody(code, hasLogo), true);
 
-            ClassPathResource logo = new ClassPathResource(logoPath);
-            if (logo.exists()) {
+            if (hasLogo) {
                 helper.addInline("logo", logo, "image/png");
             }
 
@@ -50,14 +52,11 @@ public class EmailService {
         }
     }
 
-    private String buildBody(String code) {
-        String logoHtml = """
-                   <img class="logo"
-                        src="cid:logo"
-                        width="90"
-                        alt="덕성여대 지도 서비스"
-                        style="display:block; margin-left:45px; margin-bottom:40px;" />
-                   """;
+    private String buildBody(String code, boolean hasLogo) {
+        String logoHtml = hasLogo ? """
+        <img src="cid:logo" width="90" alt="덕성여대 지도 서비스"
+             style="display:block; margin-left:45px; margin-bottom:40px;" />
+        """ : "";
 
         return """
     <!doctype html>
